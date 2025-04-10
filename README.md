@@ -2,7 +2,7 @@
 
 A desktop application for the Fuzzy NEWS-2 system, providing a user-friendly interface for calculating and managing National Early Warning Score 2 (NEWS-2) assessments using fuzzy logic.
 
-![alt text]([https://github.com/Troy-Kettle/fuzzy_news2_app/tree/59da07d852a34076d61e9febc0fe26efa0eb1394/imgs)logo.png)]
+![alt text]([https://github.com/Troy-Kettle/fuzzy_news2_app/tree/59da07d852a34076d61e9febc0fe26efa0eb1394/imgs/logo.png)]
 
 ## Features
 
