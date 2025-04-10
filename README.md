@@ -26,7 +26,7 @@ A desktop application for the Fuzzy NEWS-2 system, providing a user-friendly int
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/fuzzy-news2-electron.git
+git clone https://github.com/Troy-Kettle/fuzzy-news2-electron.git
 cd fuzzy-news2-electron
 
 2. Install dependencies:
