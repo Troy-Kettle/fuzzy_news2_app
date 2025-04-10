@@ -38,7 +38,9 @@ yarn install
 
 3. Start the application:
 ```bash
-npm start
+npm start![Screenshot from 2025-04-10 16-39-37](https://github.com/user-attachments/assets/2251136a-873f-4f5a-8f88-283a30bb2811)
+![Screenshot from 2025-04-10 16-39-37](https://github.com/user-attachments/assets/58300d7f-8317-4a18-9949-80169a2d70ae)
+
 # or
 yarn start
 ```
