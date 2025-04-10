@@ -26,7 +26,8 @@ A desktop application for the Fuzzy NEWS-2 system, providing a user-friendly int
 ```bash
 git clone https://github.com/yourusername/fuzzy-news2-electron.git
 cd fuzzy-news2-electron
-```
+```![Screenshot from 2025-04-10 16-39-37](https://github.com/user-attachments/assets/370b7351-98e9-4fba-b743-545004d08250)
+
 
 2. Install dependencies:
 ```bash
