@@ -104,7 +104,6 @@ fuzzy-news2-electron/
 ├── src/                  # Source code
 │   ├── api.js            # API communication
 │   ├── chart-utils.js    # Chart utilities
-│   ├── news2-calculator.js # Client-side NEWS-2 calculator
 │   └── utils.js          # General utilities
 ├── assets/               # Static assets
 └── package.json          # Project configuration
