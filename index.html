@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src 'self' http://localhost:*;">
+  <title>Fuzzy NEWS-2</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-container">
+        <img src="assets/logo.png" alt="Fuzzy NEWS-2 Logo" class="logo">
+        <h1>Fuzzy NEWS-2</h1>
+      </div>
+      <nav class="main-nav">
+        <button id="nav-dashboard" class="nav-button active">Dashboard</button>
+        <button id="nav-new-assessment" class="nav-button">New Assessment</button>
+        <button id="nav-history" class="nav-button">Patient History</button>
+        <button id="nav-settings" class="nav-button">Settings</button>
+      </nav>
+      <div class="header-actions">
+        <div class="api-status">
+          <span id="api-status-indicator" class="status-indicator offline"></span>
+          <span id="api-status-text">Checking API...</span>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <main class="content-container">
+      <!-- Dashboard View (Default) -->
+      <section id="dashboard-view" class="view active">
+        <h2>Dashboard</h2>
+        <div class="dashboard-grid">
+          <div class="card recent-patients">
+            <h3>Recent Patients</h3>
+            <div id="recent-patients-list" class="list-container">
+              <p class="empty-message">No recent patients</p>
+            </div>
+          </div>
+          <div class="card quick-assessment">
+            <h3>Quick Assessment</h3>
+            <form id="quick-assessment-form" class="compact-form">
+              <div class="form-group">
+                <label for="quick-patient-id">Patient ID</label>
+                <input type="text" id="quick-patient-id" required placeholder="Enter patient ID">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="quick-respiratory-rate">Respiratory Rate</label>
+                  <input type="number" id="quick-respiratory-rate" required min="0" max="50" placeholder="breaths/min">
+                </div>
+                <div class="form-group">
+                  <label for="quick-oxygen-saturation">Oxygen Saturation</label>
+                  <input type="number" id="quick-oxygen-saturation" required min="70" max="100" placeholder="%">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="quick-systolic-bp">Systolic BP</label>
+                  <input type="number" id="quick-systolic-bp" required min="50" max="250" placeholder="mmHg">
+                </div>
+                <div class="form-group">
+                  <label for="quick-pulse">Pulse</label>
+                  <input type="number" id="quick-pulse" required min="20" max="180" placeholder="bpm">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="quick-consciousness">Consciousness</label>
+                  <select id="quick-consciousness" required>
+                    <option value="A">Alert</option>
+                    <option value="V">Responds to Voice</option>
+                    <option value="P">Responds to Pain</option>
+                    <option value="U">Unresponsive</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="quick-temperature">Temperature</label>
+                  <input type="number" id="quick-temperature" required min="33" max="43" step="0.1" placeholder="°C">
+                </div>
+              </div>
+              <div class="form-group checkbox-group">
+                <label for="quick-supplemental-oxygen">
+                  <input type="checkbox" id="quick-supplemental-oxygen">
+                  Supplemental Oxygen
+                </label>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Calculate Score</button>
+              </div>
+            </form>
+          </div>
+          <div class="card api-info">
+            <h3>API Information</h3>
+            <div id="api-info-content">
+              <p>Connecting to API...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- New Assessment View -->
+      <section id="assessment-view" class="view">
+        <h2>New Assessment</h2>
+        <div class="assessment-container">
+          <form id="assessment-form">
+            <div class="form-section">
+              <h3>Patient Information</h3>
+              <div class="form-group">
+                <label for="patient-id">Patient ID</label>
+                <input type="text" id="patient-id" required placeholder="Enter patient ID">
+              </div>
+            </div>
+            
+            <div class="form-section">
+              <h3>Vital Signs</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="respiratory-rate">Respiratory Rate</label>
+                  <input type="number" id="respiratory-rate" required min="0" max="50" placeholder="breaths/min">
+                  <div class="input-hint">Normal range: 12-20 breaths/min</div>
+                </div>
+                <div class="form-group">
+                  <label for="oxygen-saturation">Oxygen Saturation</label>
+                  <input type="number" id="oxygen-saturation" required min="70" max="100" placeholder="%">
+                  <div class="input-hint">Normal range: 96-100%</div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="systolic-bp">Systolic Blood Pressure</label>
+                  <input type="number" id="systolic-bp" required min="50" max="250" placeholder="mmHg">
+                  <div class="input-hint">Normal range: 110-220 mmHg</div>
+                </div>
+                <div class="form-group">
+                  <label for="pulse">Pulse Rate</label>
+                  <input type="number" id="pulse" required min="20" max="180" placeholder="bpm">
+                  <div class="input-hint">Normal range: 51-90 bpm</div>
+                </div>
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="consciousness">Level of Consciousness</label>
+                  <select id="consciousness" required>
+                    <option value="A">Alert</option>
+                    <option value="V">Responds to Voice</option>
+                    <option value="P">Responds to Pain</option>
+                    <option value="U">Unresponsive</option>
+                  </select>
+                  <div class="input-hint">AVPU scale</div>
+                </div>
+                <div class="form-group">
+                  <label for="temperature">Temperature</label>
+                  <input type="number" id="temperature" required min="33" max="43" step="0.1" placeholder="°C">
+                  <div class="input-hint">Normal range: 36.1-38.0 °C</div>
+                </div>
+              </div>
+              
+              <div class="form-group checkbox-group">
+                <label for="supplemental-oxygen">
+                  <input type="checkbox" id="supplemental-oxygen">
+                  Patient on Supplemental Oxygen
+                </label>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="reset" class="btn btn-secondary">Reset</button>
+              <button type="submit" class="btn btn-primary">Calculate NEWS-2 Score</button>
+            </div>
+          </form>
+          
+          <div id="assessment-result" class="assessment-result hidden">
+            <h3>Assessment Result</h3>
+            <div class="scores-container">
+              <div class="score-card">
+                <h4>Crisp Score</h4>
+                <div id="crisp-score" class="score">--</div>
+              </div>
+              <div class="score-card">
+                <h4>Fuzzy Score</h4>
+                <div id="fuzzy-score" class="score">--</div>
+              </div>
+              <div class="score-card risk-category">
+                <h4>Risk Category</h4>
+                <div id="risk-category" class="score">--</div>
+              </div>
+            </div>
+            
+            <div class="recommendation-container">
+              <h4>Recommended Response</h4>
+              <div id="recommended-response" class="recommendation">--</div>
+            </div>
+            
+            <div class="parameter-scores">
+              <h4>Parameter Scores</h4>
+              <table class="scores-table">
+                <thead>
+                  <tr>
+                    <th>Parameter</th>
+                    <th>Value</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody id="parameter-scores-body">
+                  <!-- Will be populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="result-actions">
+              <button id="new-assessment-btn" class="btn btn-secondary">New Assessment</button>
+              <button id="view-history-btn" class="btn btn-primary">View Patient History</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Patient History View -->
+      <section id="history-view" class="view">
+        <h2>Patient History</h2>
+        <div class="history-container">
+          <div class="history-search">
+            <div class="form-group">
+              <label for="history-patient-id">Patient ID</label>
+              <div class="search-input-group">
+                <input type="text" id="history-patient-id" placeholder="Enter patient ID">
+                <button id="search-history-btn" class="btn btn-primary">Search</button>
+              </div>
+            </div>
+          </div>
+          
+          <div id="patient-data" class="patient-data hidden">
+            <div class="stats-cards">
+              <div class="stat-card">
+                <h4>Average Score</h4>
+                <div id="avg-score" class="stat-value">--</div>
+              </div>
+              <div class="stat-card">
+                <h4>Max Score</h4>
+                <div id="max-score" class="stat-value">--</div>
+              </div>
+              <div class="stat-card">
+                <h4>Trend</h4>
+                <div id="trend" class="stat-value">--</div>
+              </div>
+              <div class="stat-card">
+                <h4>Assessments</h4>
+                <div id="assessment-count" class="stat-value">--</div>
+              </div>
+            </div>
+            
+            <div class="chart-container">
+              <canvas id="history-chart"></canvas>
+            </div>
+            
+            <div class="history-table-container">
+              <h3>Assessment History</h3>
+              <table class="history-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Crisp Score</th>
+                    <th>Fuzzy Score</th>
+                    <th>Risk Category</th>
+                    <th>Recommended Response</th>
+                  </tr>
+                </thead>
+                <tbody id="history-table-body">
+                  <!-- Will be populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div id="no-patient-data" class="no-data-message">
+            <p>Please enter a patient ID to view history</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings View -->
+      <section id="settings-view" class="view">
+        <h2>Settings</h2>
+        <div class="settings-container">
+          <form id="settings-form">
+            <div class="form-section">
+              <h3>API Configuration</h3>
+              <div class="form-group">
+                <label for="api-url">API URL</label>
+                <input type="url" id="api-url" placeholder="http://localhost:8000">
+                <div class="input-hint">The URL of the Fuzzy NEWS-2 API</div>
+              </div>
+              <div class="form-actions">
+                <button type="button" id="test-connection-btn" class="btn btn-secondary">Test Connection</button>
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+              </div>
+            </div>
+            
+            <div class="form-section">
+              <h3>Display Settings</h3>
+              <div class="form-group">
+                <label for="theme-select">Theme</label>
+                <select id="theme-select">
+                  <option value="light">Light</option>
+                  <option value="dark">Dark</option>
+                  <option value="system">System Default</option>
+                </select>
+              </div>
+            </div>
+          </form>
+          
+          <div class="form-section">
+            <h3>About</h3>
+            <div class="about-info">
+              <p><strong>Fuzzy NEWS-2 Desktop</strong></p>
+              <p>Version 0.1.0</p>
+              <p>A desktop application for the Fuzzy NEWS-2 system</p>
+              <p>
+                <small>
+                  Node.js: <span id="node-version"></span><br>
+                  Chrome: <span id="chrome-version"></span><br>
+                  Electron: <span id="electron-version"></span>
+                </small>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>Fuzzy NEWS-2 Desktop &copy; 2025 | <a href="#" id="about-link">About</a></p>
+    </footer>
+  </div>
+
+  <!-- Toast notification component -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Modal component -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div id="modal-container" class="modal-container">
+      <div class="modal-header">
+        <h3 id="modal-title">Modal Title</h3>
+        <button id="modal-close" class="modal-close">&times;</button>
+      </div>
+      <div id="modal-content" class="modal-content">
+        <!-- Modal content will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button id="modal-cancel" class="btn btn-secondary">Cancel</button>
+        <button id="modal-confirm" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
